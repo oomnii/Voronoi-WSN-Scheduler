@@ -1,0 +1,31 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{amsmath}
+\usepackage{cite}
+\title{Voronoi-Based Node Scheduling in Wireless Sensor Networks}
+\author{\IEEEauthorblockN{Om Seth}\IEEEauthorblockA{Semester 6 Project}}
+\begin{document}\maketitle
+\begin{abstract}
+Dense WSN deployments waste energy due to sensing redundancy. This work uses bounded Voronoi cell areas to identify redundant nodes and schedule them to sleep while maintaining coverage. Sleep nodes are retained as backups and reactivated under failures. A simulator and dashboard provide metrics and comparisons with random baselines.
+\end{abstract}
+\begin{IEEEkeywords}
+WSN, Voronoi diagram, scheduling, coverage, energy efficiency, fault tolerance
+\end{IEEEkeywords}
+\section{Introduction}
+Scheduling improves WSN lifetime by selecting a subset of active sensors without losing coverage.
+\section{System Model}
+A rectangular field $[0,W]\times[0,H]$ contains $N$ nodes with sensing radius $R_s$. Coverage ratio is
+$C=\frac{\text{covered area}}{WH}$.
+\section{Voronoi-Threshold Scheduling}
+Compute bounded Voronoi cells and their areas $A_i$. Define threshold
+$A_{th}=k\pi R_s^2$. Iteratively turn OFF the node with minimum $A_i$ if $A_{min}<A_{th}$.
+\section{Fault Tolerance}
+Active nodes fail with probability $p$. If coverage drops below target, backups are activated greedily by maximum incremental covered area.
+\section{Baselines}
+Random-Same-OFF and Random-Greedy-Coverage are used for comparison.
+\section{Conclusion}
+Voronoi areas give an interpretable redundancy signal enabling energy savings without major coverage loss.
+\bibliographystyle{IEEEtran}
+\begin{thebibliography}{1}
+\bibitem{aurenhammer}F. Aurenhammer, ``Voronoi diagrams---a survey,'' \emph{ACM Computing Surveys}.
+\end{thebibliography}
+\end{document}

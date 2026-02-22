@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Voronoi WSN Scheduler — Premium Dashboard</title>
+  <link rel="stylesheet" href="/static/styles.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/d3-delaunay@6"></script>
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+
+  <div class="left-header">
+    <div class="brand">Voronoi WSN Scheduler</div>
+    <div class="subtitle">
+      Energy saving • Backup nodes • Fault tolerance • Comparison • Experiments
+    </div>
+  </div>
+
+  <!-- IIIT Branding -->
+  <div class="center-brand">
+    <img src="/static/iiitS.jpg" class="iiit-logo">
+    <span class="iiit-text">IIIT SURAT</span>
+  </div>
+
+  <div class="pill">WSN PROJECT [SEM-6]</div>
+
+</header>
+
+  <main class="grid">
+    <section class="panel">
+      <h2>Controls</h2>
+
+      <div class="field">
+        <label>Nodes (N)</label>
+        <input id="n_nodes" type="range" min="20" max="500" value="120">
+        <span id="n_nodes_val">120</span>
+      </div>
+
+      <div class="field"><label>Field width</label><input id="width" type="number" value="100"></div>
+      <div class="field"><label>Field height</label><input id="height" type="number" value="100"></div>
+      <div class="field"><label>Sensing radius</label><input id="radius" type="number" value="15"></div>
+      <div class="field"><label>Threshold coeff</label><input id="th" type="number" step="0.001" value="0.020"></div>
+      <div class="field"><label>Seed</label><input id="seed" type="number" value="7"></div>
+
+      <div class="hr"></div>
+
+      <div class="field"><label>Enable fault tolerance</label><input id="ft" type="checkbox" checked></div>
+      <div class="field"><label>Failure probability</label><input id="failp" type="number" step="0.005" value="0.020"></div>
+      <div class="field"><label>Rounds</label><input id="rounds" type="number" value="50"></div>
+
+      <div class="btnrow">
+        <button id="runBtn" class="btn">Run Voronoi</button>
+        <button id="compareBtn" class="btn2">Compare</button>
+      </div>
+
+      <button id="exportBtn" class="btn3">Download CSV (this run)</button>
+
+      <p class="hint">Tip: increase threshold coeff → more OFF nodes → more energy saving.</p>
+      <p class="hint2" id="statusLine">API: checking…</p>
+    </section>
+
+    <section class="content">
+      <div class="tabs">
+        <button class="tab active" data-tab="tab_run">Run</button>
+        <button class="tab" data-tab="tab_compare">Compare</button>
+        <button class="tab" data-tab="tab_experiment">Experiments</button>
+        <button class="tab" data-tab="tab_about">About</button>
+      </div>
+
+      <section id="tab_run" class="tabpane active">
+        <div class="cards">
+          <div class="card"><div class="label">Active nodes</div><div id="activeNodes" class="value">-</div></div>
+          <div class="card"><div class="label">Backup nodes</div><div id="backupNodes" class="value">-</div></div>
+          <div class="card"><div class="label">Energy saved (%)</div><div id="energySaved" class="value">-</div></div>
+          <div class="card"><div class="label">Coverage</div><div id="coverage" class="value">-</div></div>
+        </div>
+
+        <div class="viz">
+          <div class="viz-header">
+            <h2>Bounded Voronoi (Active nodes)</h2>
+            <div class="legend">
+              <span class="dot active"></span> Active
+              <span class="dot backup"></span> Backup (OFF)
+            </div>
+          </div>
+          <svg id="voronoiSvg"></svg>
+        </div>
+
+        <div class="charts">
+          <div class="chart" id="chartCoverage"></div>
+          <div class="chart" id="chartActive"></div>
+        </div>
+      </section>
+
+      <section id="tab_compare" class="tabpane">
+        <div class="compareGrid">
+          <div class="compareCard"><h3>Voronoi-Threshold</h3><div id="cmp_voronoi" class="compareBody">Run “Compare” to see results.</div></div>
+          <div class="compareCard"><h3>Random-Same-OFF</h3><div id="cmp_r1" class="compareBody">—</div></div>
+          <div class="compareCard"><h3>Random-Greedy-Coverage</h3><div id="cmp_r2" class="compareBody">—</div></div>
+        </div>
+
+        <div class="viz">
+          <div class="viz-header">
+            <h2>Visualization (choose algorithm)</h2>
+            <div class="seg">
+              <button class="segbtn active" data-algo="voronoi">Voronoi</button>
+              <button class="segbtn" data-algo="r1">Random Same OFF</button>
+              <button class="segbtn" data-algo="r2">Random Greedy</button>
+            </div>
+          </div>
+          <svg id="cmpSvg"></svg>
+        </div>
+      </section>
+
+      <section id="tab_experiment" class="tabpane">
+        <div class="expHeader">
+          <div>
+            <h2>Energy Saved vs Density</h2>
+            <p class="muted">We vary field area (density changes) and measure backups + energy saved.</p>
+          </div>
+          <button id="expBtn" class="btn2">Run Experiment</button>
+        </div>
+        <div class="charts">
+          <div class="chart" id="chartEnergyDensity"></div>
+          <div class="chart" id="chartBackupDensity"></div>
+        </div>
+        <div class="tableWrap">
+          <table id="expTable">
+            <thead><tr><th>Field Area</th><th>Density</th><th>Backup Nodes</th><th>Coverage</th><th>Energy Saved (%)</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <button id="expCsvBtn" class="btn3">Download Experiment CSV</button>
+      </section>
+
+      <section id="tab_about" class="tabpane">
+        <div class="about">
+          <h2>What this project shows</h2>
+          <ul>
+            <li><b>Voronoi-based redundancy detection:</b> tiny bounded Voronoi area → redundant → sleep.</li>
+            <li><b>Backup nodes:</b> OFF nodes are standby for failures.</li>
+            <li><b>Fault tolerance:</b> random failures + greedy backup activation.</li>
+            <li><b>Comparison:</b> Voronoi vs random baselines.</li>
+            <li><b>Experiments:</b> density vs backups and energy saving trends.</li>
+          </ul>
+
+          <h3>Run locally</h3>
+          <pre class="code">pip install -r web/backend/requirements_web.txt
+python -m uvicorn web.backend.main:app --reload --port 8000</pre>
+          <p class="muted">Then open <b>http://localhost:8000</b></p>
+          <h5 class="muted">CREATED BY- OM SETH [UI23EC41]</h5>
+          <h5 class="muted">Project Guidance : DR. Kaustubh Dhondge , 
+                                               Ms. Sejal K Rathod  
+          </h5>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
