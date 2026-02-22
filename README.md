@@ -1,4 +1,12 @@
-# Voronoi WSN Scheduler — Premium Full-Stack Project
+## 🚀 Live Demo
+
+[![Live Demo](https://img.shields.io/badge/Open-Live%20App-blue?style=for-the-badge)](https://voronoi-wsn-scheduler.onrender.com)
+
+🔗 Direct link:  
+https://voronoi-wsn-scheduler.onrender.com
+
+> ⚠️ Free tier may take 20–40 seconds to wake up.
+# Voronoi WSN Scheduler — Full-Stack Project
 
 ## Run locally
 ```bash
