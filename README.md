@@ -1,4 +1,4 @@
-Energy-Efficient-Node-Scheduling-with-AI-Driven-Optimization
+## Energy-Efficient-Node-Scheduling-with-AI-Driven-Optimization
 
 A FastAPI + HTML/CSS/JS simulator for AI-Driven node scheduling in wireless sensor networks.
 
